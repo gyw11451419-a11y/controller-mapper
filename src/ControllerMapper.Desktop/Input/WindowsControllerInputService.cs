@@ -242,7 +242,7 @@ public sealed class WindowsControllerInputService : IControllerInputService
         }
         else
         {
-            // Bluetooth 0x01 is a short report and cannot prove Edge paddle state.
+            // The short Bluetooth 0x01 report omits Edge paddle state; reject it. Full USB reports passed DSE validation; Bluetooth is not guaranteed.
             return false;
         }
 

@@ -1,6 +1,6 @@
 # Windows 手柄映射与单键连发软件：整体架构
 
-> 设计稿与首个开发原型，2026-09-23。目标平台 Windows 10/11、[`.NET 10` LTS](https://learn.microsoft.com/en-us/dotnet/core/releases-and-support)、WPF。**当前配置全局生效，由用户手动切换；不按游戏或应用路径匹配。**`ControllerMapper.Desktop` 已通过 Release 编译并发布为自包含 Windows EXE，且已完成无手柄启动检查；没有 Xbox、DualSense、DualSense Edge 或目标游戏的实机验证记录。本文中的分层项目结构与部分接口是后续目标，不能视为现有代码均已实现。项目和发行物采用 Apache-2.0，官方免费发布，与 Sony、Microsoft 均无关联或背书。用途限单机游戏、模拟器和生产力，不用于竞技网游。
+> 设计稿与首个开发原型，2026-09-23。目标平台 Windows 10/11、[`.NET 10` LTS](https://learn.microsoft.com/en-us/dotnet/core/releases-and-support)、WPF。**当前配置全局生效，由用户手动切换；不按游戏或应用路径匹配。**`ControllerMapper.Desktop` 已通过 Release 编译并发布为自包含 Windows EXE，且已完成无手柄启动检查。DualSense Edge 的 USB、左右独立背键、按键映射和单键连发均已通过实机验证；蓝牙连接不作保证。Xbox、标准 DualSense 和具体游戏输入路径尚未验收。本文中的分层项目结构与部分接口是后续目标，不能视为现有代码均已实现。项目和发行物采用 Apache-2.0，官方免费发布，与 Sony、Microsoft 均无关联或背书。用途限单机游戏、模拟器和生产力，不用于竞技网游。
 
 ## 1. 首版决策与交付边界
 
@@ -8,7 +8,7 @@
 
 这个要求使虚拟手柄输出成为 **P0 前置条件**，不再是 P2 可选项。`SendInput` 只能写入键鼠流，不能承担手柄输出；XInput 的 `SetState` 设置的是震动，GameInput 的设备输出报告也不能给游戏伪造按钮。[SendInput](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput) · [XInputSetState](https://learn.microsoft.com/en-us/windows/win32/api/xinput/nf-xinput-xinputsetstate) · [GameInput 原始设备输出](https://learn.microsoft.com/en-us/gaming/gdk/docs/reference/input/gameinput/interfaces/igameinputdevice/methods/igameinputdevice_sendrawdeviceoutput?view=gdk-2604) 系统可见的可控虚拟手柄需要经验证的虚拟设备驱动路径；若最终不允许用户安装驱动，则手柄按钮重映射与连发不能作为已交付功能。[微软 VHF 驱动说明](https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/virtual-hid-framework--vhf-)
 
-DualSense Edge 的背键只在目标设备、固件、连接方式、输入路径经验证能单独报告它时，才标为“独立背键”。否则只能让用户选择**可观测的映射后逻辑输入**；此时同名主按键也可能触发，界面必须说明无法区分。Sony 仅确认 Edge 可连接 Windows 10/11 且功能随连接方式变化，并未为本项目保证独立背键可读。[Sony 设备说明](https://www.playstation.com/en-ca/support/hardware/dualsense-edge-other-devices/)
+DualSense Edge 的左右实体背键已在 USB 连接下通过实机验证，可作为独立输入用于按键映射和单键连发；蓝牙连接不作保证。背键设置不会写入手柄固件。[Sony 设备说明](https://www.playstation.com/en-ca/support/hardware/dualsense-edge-other-devices/)
 
 反作弊进程检测虽然列在功能计划的 P1，但“检测到时立即停止连发”的安全规则是运行前提。因此，**最小进程监测与失败关闭门控必须随首版连发一起交付**；P1 可扩展规则库和提示体验。在这项前提未完成前，连发功能不得进入发行构建。
 
@@ -77,7 +77,7 @@ flowchart LR
 ```
 
 1. **设备接入。** Xbox 物理设备以系统 XInput 1.4 为候选输入路径；DualSense/Edge 以 HidSharp 读取 HID 报告作为候选实现。一个物理设备只选一个活动适配器，避免 HID 与 XInput 双重触发；无法可靠关联跨 API 设备标识时，让用户显式选择输入路径并关闭另一条。适配器输出**会话内来源 ID**、单调时间戳、输入快照、连接方式和来源能力；可选持久物理 ID 只有经该输入路径验证后才保存到配置。XInput 的 0–3 槽位不能当作跨断开或重启的持久设备 ID，槽位重分配须关闭门并重新确认设备。**虚拟 Xbox 设备也会占用 XInput 槽位**：输入适配器必须排除本软件创建的虚拟设备，不能把其报告回送为物理输入；若无法可靠区分，或四个槽位已满而虚拟设备无法创建，则关闭输出门。读错、断开或快照过期变成“不健康”，不得沿用最后一次“按下”状态。XInput 1.4 随 Windows 10/11 提供；标准 `XINPUT_GAMEPAD` 没有独立背键字段。[XInput 版本](https://learn.microsoft.com/en-us/windows/win32/xinput/xinput-versions) · [XInput 多控制器说明](https://learn.microsoft.com/en-us/windows/win32/xinput/getting-started-with-xinput) · [按钮结构](https://learn.microsoft.com/en-us/windows/win32/api/xinput/ns-xinput-xinput_gamepad)
-2. **设备能力判定。** 能力表为每台设备和连接方式记录 `IndependentPhysicalInput`、`MappedLogicalOnly`、`Unavailable` 或 `Unknown`，并保留验证依据。Linux HID 代码给出了 Edge 输入报告与背键位的协议线索，但 Linux 蓝牙实测不能充当 Windows USB/蓝牙验收。[Linux 代码](https://github.com/torvalds/linux/blob/master/drivers/hid/hid-playstation.c) · [实测补丁](https://www.spinics.net/lists/kernel/msg6141544.html)
+2. **设备能力判定。** 能力表为每台设备和连接方式记录 `IndependentPhysicalInput`、`MappedLogicalOnly`、`Unavailable` 或 `Unknown`，并保留验证依据。DualSense Edge 的 Windows USB 连接及左右独立背键按键映射、单键连发均已通过本项目实机验证；蓝牙连接不作保证。Linux HID 代码仍只是协议参考，不能替代其他设备或固件组合的验收。[Linux 代码](https://github.com/torvalds/linux/blob/master/drivers/hid/hid-playstation.c) · [实测补丁](https://www.spinics.net/lists/kernel/msg6141544.html)
 3. **全局配置与前台切换。** 用户手动选择一份全局配置；软件不读取或匹配游戏 `.exe` 路径。周期读取 `GetForegroundWindow` → `GetWindowThreadProcessId` 以确认有可识别的前台窗口。窗口不可识别时输出中性状态；前台窗口句柄变化时立即归零一次，连发须观察到新的松开再按下沿才继续。普通映射在新窗口的后续输入快照中恢复。程序不启动游戏或应用。[前台窗口](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow) · [窗口 PID](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowthreadprocessid)
 4. **绑定解析。** 对按钮状态变化、来源 ID、活动配置和 Shift 层生成普通手柄按钮、按钮组合或轴映射，或生成唯一的 `TurboBinding`。每份配置最多一个连发绑定，全程序最多一个运行中的连发任务；目标只能是一个**手柄按钮或全幅扳机**，不得是组合键、摇杆或可编程扳机力度曲线。连发触发源由调度器消费，不进入虚拟手柄的普通透传基线；特别是 Edge 仅报告映射后逻辑按钮且连发目标与该按钮同名时，否则虚拟按钮会一直按下。连发目标也不得与同一配置内其他普通映射的输出按钮重叠。不接受序列、条件树、多键连发、自动压枪参数或无人按住的循环。配置 JSON 带 `schemaVersion`；导入时校验文件大小和深度、字段类型、允许的虚拟设备按钮、唯一绑定、目标冲突和速率范围，拒绝键鼠目标、未知宏动作和脚本字段，再原子替换当前配置。P2 社区分享复用同一校验入口。
 5. **门控和调度。** 启动、每次输出前以及设备/前台/进程监测/虚拟设备状态变化时检查安全门。按住触发的上升沿可启动一个调度任务；建议间隔允许 **50–1000 ms**、默认 **120 ms**，每次按下脉冲建议 **20 ms**，且按下时间必须小于间隔。这些是待实机验证的产品参数。调度器只切换一个虚拟按钮位或一根扳机轴的全幅/零值，其他普通映射产生的按钮和轴状态保持不变。松开、门关闭、任务异常立即取消任务并提交该按钮松开；门恢复后仍要求**新的松开再按下**，防止持续按住时自动重启。
@@ -240,6 +240,6 @@ GameInput 可作为后续输入适配器，不在首版默认依赖链中。其�
 
 还必须分别测试“只有虚拟设备被目标应用读取”和“物理加虚拟设备同时被读取”。后者可能把原按钮的持续按下与虚拟连发混合，不能计为单按钮连发验收通过。目标应用到底读取哪只手柄不能由驱动 `Probe()` 自动判断；要保存逐应用人工验收记录，并在游戏版本、控制器设置或连接方式变化后重新验证。用户未安装已批准的虚拟后端、后端不健康、或无法确认目标应用只使用正确输入路径时，UI 不得标示该配置已正常实现重映射/连发。不会自动安装或配置任何驱动。
 
-硬件验收矩阵按**设备型号 × 固件版本 × USB/蓝牙 × 输入路径**记录独立背键、映射后逻辑输入、电量、断开事件、陀螺仪和触发器能力。没有验收证据的组合显示 `Unknown`，不写入 README 的已支持表。DualSense Edge 背键连发的 P0 验收可以通过已验证的独立背键路径，或通过明确标注限制的可观测逻辑键路径实现；不能把 Linux 协议线索标成 Windows 实测结果。
+硬件验收矩阵按**设备型号 × 固件版本 × USB/蓝牙 × 输入路径**记录独立背键、映射后逻辑输入、电量、断开事件、陀螺仪和触发器能力。DualSense Edge 的 USB、左右独立背键映射及连发已通过实机验收；蓝牙连接不作保证，其他没有验收证据的组合显示 `Unknown`，不写入 README 的已支持表。不能把 Linux 协议线索标成 Windows 实测结果。
 
 README、关于页与发行说明必须一致写明：**仅限单机、模拟器和生产力；不用于竞技网游；与 Sony、Microsoft 无关联；仅支持手柄输入和手柄输出。手柄按钮输出取决于经验证的虚拟设备驱动；本软件不捆绑或静默安装驱动，也不保证屏蔽物理手柄输入。**

@@ -18,7 +18,7 @@ public static class ControllerButtonLabels
 
     public static string InputLayout(DeviceDescriptor? device) => device?.Kind switch
     {
-        "DualSense Edge" => "已识别 DualSense Edge HID：显示 PlayStation 输入按键；独立背键仍需实机验证。输出保持虚拟 Xbox 360 按键。",
+        "DualSense Edge" => "已识别 DualSense Edge HID：左右独立背键可用于按键映射和单键连发；USB 已实机验证，蓝牙不作保证。输出保持虚拟 Xbox 360 按键。",
         "DualSense" => "已识别 DualSense HID：显示 PlayStation 输入按键。输出保持虚拟 Xbox 360 按键。",
         "Xbox" => "已识别 XInput：显示 Xbox 按键。XInput 无法证明实体手柄型号；输出为虚拟 Xbox 360。",
         _ => "尚未识别输入手柄，暂显示 Xbox 按键；连接手柄后会自动更新。"
@@ -43,8 +43,8 @@ public static class ControllerButtonLabels
             GamepadButton.Start => "Options · 选项",
             GamepadButton.LeftStick => "L3 · 左摇杆按下",
             GamepadButton.RightStick => "R3 · 右摇杆按下",
-            GamepadButton.LeftPaddle => device?.Kind == "DualSense Edge" ? "左背键（待验证）" : "左背键（仅 Edge）",
-            GamepadButton.RightPaddle => device?.Kind == "DualSense Edge" ? "右背键（待验证）" : "右背键（仅 Edge）",
+            GamepadButton.LeftPaddle => device?.Kind == "DualSense Edge" ? "左背键 · Edge" : "左背键（仅 Edge）",
+            GamepadButton.RightPaddle => device?.Kind == "DualSense Edge" ? "右背键 · Edge" : "右背键（仅 Edge）",
             _ => XboxLabel(button)
         };
     }
