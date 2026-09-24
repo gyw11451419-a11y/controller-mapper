@@ -23,13 +23,13 @@
   <Style x:Key="FieldLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionStyle}"><Setter Property="Foreground" Value="{StaticResource AppTextBrush}" /><Setter Property="Margin" Value="0,0,0,10" /></Style>
   <Style x:Key="SectionTitleStyle" TargetType="TextBlock"><Setter Property="FontSize" Value="17" /><Setter Property="FontWeight" Value="Normal" /></Style>
   <Style x:Key="ActionButton" TargetType="Button">
-   <Setter Property="Background" Value="#1B1E29" /><Setter Property="Foreground" Value="{StaticResource AppTextBrush}" /><Setter Property="BorderBrush" Value="{StaticResource AppBorderBrush}" /><Setter Property="BorderThickness" Value="1" /><Setter Property="Padding" Value="24,10" /><Setter Property="MinHeight" Value="38" /><Setter Property="Cursor" Value="Hand" />
+   <Setter Property="Background" Value="#1B1E29" /><Setter Property="Foreground" Value="{StaticResource AppTextBrush}" /><Setter Property="BorderBrush" Value="Transparent" /><Setter Property="BorderThickness" Value="0" /><Setter Property="FocusVisualStyle" Value="{x:Null}" /><Setter Property="Padding" Value="24,10" /><Setter Property="MinHeight" Value="38" /><Setter Property="Cursor" Value="Hand" />
    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
     <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="22" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" /></Border>
     <ControlTemplate.Triggers>
-     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="#383B49" /><Setter TargetName="Chrome" Property="BorderBrush" Value="#D7D8DF" /></Trigger>
+     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="#2C303D" /><Setter Property="Foreground" Value="{StaticResource AppTextBrush}" /></Trigger>
      <Trigger Property="IsPressed" Value="True"><Setter TargetName="Chrome" Property="Opacity" Value="0.65" /></Trigger>
-     <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Chrome" Property="BorderBrush" Value="White" /><Setter TargetName="Chrome" Property="BorderThickness" Value="2" /></Trigger>
+     <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Chrome" Property="Background" Value="#354055" /><Setter Property="Foreground" Value="{StaticResource AppTextBrush}" /></Trigger>
      <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Chrome" Property="Opacity" Value="0.35" /></Trigger>
     </ControlTemplate.Triggers>
    </ControlTemplate></Setter.Value></Setter>
@@ -40,33 +40,34 @@
   <Style x:Key="WindowCaptionButton" TargetType="Button">
    <Setter Property="Width" Value="46" /><Setter Property="Height" Value="32" />
    <Setter Property="Background" Value="Transparent" /><Setter Property="Foreground" Value="{StaticResource AppTextBrush}" />
-   <Setter Property="BorderThickness" Value="0" /><Setter Property="Padding" Value="0" />
+   <Setter Property="BorderThickness" Value="0" /><Setter Property="Padding" Value="0" /><Setter Property="FocusVisualStyle" Value="{x:Null}" />
    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
-    <Border x:Name="CaptionChrome" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="1">
+    <Border x:Name="CaptionChrome" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="0">
      <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
     </Border>
     <ControlTemplate.Triggers>
      <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="CaptionChrome" Property="Background" Value="#18FFFFFF" /></Trigger>
      <Trigger Property="IsPressed" Value="True"><Setter TargetName="CaptionChrome" Property="Background" Value="#2AFFFFFF" /></Trigger>
-     <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="CaptionChrome" Property="BorderBrush" Value="#A0FFFFFF" /></Trigger>
+     <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="CaptionChrome" Property="Background" Value="#24FFFFFF" /></Trigger>
     </ControlTemplate.Triggers>
    </ControlTemplate></Setter.Value></Setter>
   </Style>
   <Style x:Key="MenuCard" TargetType="Button" BasedOn="{StaticResource ActionButton}">
    <Setter Property="Background" Value="#20212A" /><Setter Property="BorderBrush" Value="Transparent" /><Setter Property="Padding" Value="30" /><Setter Property="HorizontalContentAlignment" Value="Stretch" />
-   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="Card" Background="{TemplateBinding Background}" CornerRadius="9" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Padding="{TemplateBinding Padding}"><ContentPresenter /></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Card" Property="Background" Value="#2B2D39" /><Setter TargetName="Card" Property="BorderBrush" Value="#85899E" /></Trigger><Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Card" Property="BorderBrush" Value="White" /></Trigger><Trigger Property="IsPressed" Value="True"><Setter TargetName="Card" Property="Opacity" Value="0.7" /></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
+   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="Card" Background="{TemplateBinding Background}" CornerRadius="9" BorderBrush="Transparent" BorderThickness="0" Padding="{TemplateBinding Padding}"><ContentPresenter /></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Card" Property="Background" Value="#2B2D39" /></Trigger><Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Card" Property="Background" Value="#354055" /></Trigger><Trigger Property="IsPressed" Value="True"><Setter TargetName="Card" Property="Opacity" Value="0.7" /></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
   </Style>
   <Style x:Key="PadButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
    <Setter Property="Width" Value="106" /><Setter Property="Height" Value="38" /><Setter Property="FontSize" Value="13" /><Setter Property="Padding" Value="8,4" /><Setter Property="Background" Value="#1B1D25" />
    <Setter Property="Content"><Setter.Value><MultiBinding Converter="{StaticResource InputButtonLabel}"><Binding Path="Tag" RelativeSource="{RelativeSource Self}" /><Binding Path="DataContext.SelectedDevice" RelativeSource="{RelativeSource Self}" /></MultiBinding></Setter.Value></Setter>
    <Setter Property="Command" Value="{Binding SelectSourceCommand}" /><Setter Property="CommandParameter" Value="{Binding Tag, RelativeSource={RelativeSource Self}}" /><Setter Property="ToolTip" Value="{Binding Content, RelativeSource={RelativeSource Self}}" /><Setter Property="AutomationProperties.Name" Value="{Binding Content, RelativeSource={RelativeSource Self}}" />
    <Style.Triggers>
-    <DataTrigger Value="True"><DataTrigger.Binding><MultiBinding Converter="{StaticResource SelectedButton}"><Binding Path="NewMappingSource" /><Binding Path="Tag" RelativeSource="{RelativeSource Self}" /></MultiBinding></DataTrigger.Binding><Setter Property="BorderBrush" Value="White" /><Setter Property="BorderThickness" Value="2" /></DataTrigger>
+    <DataTrigger Value="True"><DataTrigger.Binding><MultiBinding Converter="{StaticResource SelectedButton}"><Binding Path="NewMappingSource" /><Binding Path="Tag" RelativeSource="{RelativeSource Self}" /></MultiBinding></DataTrigger.Binding><Setter Property="Background" Value="#303B52" /><Setter Property="Foreground" Value="#DFE9FF" /></DataTrigger>
     <DataTrigger Value="True"><DataTrigger.Binding><MultiBinding Converter="{StaticResource PressedButton}"><Binding Path="LiveInputText" /><Binding Path="Tag" RelativeSource="{RelativeSource Self}" /></MultiBinding></DataTrigger.Binding><Setter Property="Background" Value="#2867B0" /></DataTrigger>
    </Style.Triggers>
   </Style>
-  <Style x:Key="ProfileItem" TargetType="ListBoxItem"><Setter Property="Foreground" Value="{StaticResource AppTextBrush}" /><Setter Property="HorizontalContentAlignment" Value="Stretch" /><Setter Property="Padding" Value="18,16" /><Setter Property="Margin" Value="0,0,0,8" /><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ListBoxItem"><Border x:Name="Row" Background="#1B1E28" BorderBrush="Transparent" BorderThickness="1" CornerRadius="8" Padding="{TemplateBinding Padding}"><ContentPresenter /></Border><ControlTemplate.Triggers><Trigger Property="IsSelected" Value="True"><Setter TargetName="Row" Property="Background" Value="#2A3042" /><Setter TargetName="Row" Property="BorderBrush" Value="White" /></Trigger><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Row" Property="Background" Value="#323644" /></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter></Style>
-  <Style x:Key="ModalCard" TargetType="Border"><Setter Property="Background" Value="#20222C" /><Setter Property="BorderBrush" Value="#505360" /><Setter Property="BorderThickness" Value="1" /><Setter Property="CornerRadius" Value="12" /><Setter Property="Padding" Value="28" /><Setter Property="Width" Value="470" /><Setter Property="HorizontalAlignment" Value="Center" /><Setter Property="VerticalAlignment" Value="Center" /></Style>
+  <Style x:Key="ProfileItem" TargetType="ListBoxItem"><Setter Property="FocusVisualStyle" Value="{x:Null}" /><Setter Property="Foreground" Value="{StaticResource AppTextBrush}" /><Setter Property="HorizontalContentAlignment" Value="Stretch" /><Setter Property="Padding" Value="18,16" /><Setter Property="Margin" Value="0,0,0,8" /><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ListBoxItem"><Border x:Name="Row" Background="#1B1E28" BorderBrush="Transparent" BorderThickness="0" CornerRadius="8" Padding="{TemplateBinding Padding}"><ContentPresenter /></Border><ControlTemplate.Triggers><Trigger Property="IsSelected" Value="True"><Setter TargetName="Row" Property="Background" Value="#2A3042" /></Trigger><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Row" Property="Background" Value="#323644" /></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter></Style>
+  <Style x:Key="ModalCard" TargetType="Border"><Setter Property="Background" Value="#20222C" /><Setter Property="BorderBrush" Value="Transparent" /><Setter Property="BorderThickness" Value="0" /><Setter Property="CornerRadius" Value="12" /><Setter Property="Padding" Value="28" /><Setter Property="Width" Value="470" /><Setter Property="HorizontalAlignment" Value="Center" /><Setter Property="VerticalAlignment" Value="Center" /></Style>
   <Style x:Key="FadedController" TargetType="Image"><Setter Property="Source" Value="/ControllerMapper;component/Assets/controller-outline.png" /><Setter Property="Stretch" Value="Uniform" /><Setter Property="OpacityMask"><Setter.Value><RadialGradientBrush GradientOrigin="0.5,0.5" Center="0.5,0.5" RadiusX="0.65" RadiusY="0.7"><GradientStop Color="White" Offset="0.68" /><GradientStop Color="Transparent" Offset="1" /></RadialGradientBrush></Setter.Value></Setter></Style>
  </ResourceDictionary></Application.Resources>
 </Application>
+
