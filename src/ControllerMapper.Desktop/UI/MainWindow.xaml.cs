@@ -26,6 +26,13 @@ public partial class MainWindow : FluentWindow
         Closing += (_, args) => ConfirmUnsavedChanges(viewModel, args);
     }
 
+    private void OnMinimizeWindow(object sender, RoutedEventArgs args) => WindowState = WindowState.Minimized;
+
+    private void OnToggleMaximizeWindow(object sender, RoutedEventArgs args) =>
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+    private void OnCloseWindow(object sender, RoutedEventArgs args) => Close();
+
     private void OnHeaderMouseLeftButtonDown(object sender, MouseButtonEventArgs args)
     {
         if (args.LeftButton != MouseButtonState.Pressed) return;
@@ -38,6 +45,11 @@ public partial class MainWindow : FluentWindow
         }
 
         args.Handled = true;
+        if (args.ClickCount == 2)
+        {
+            OnToggleMaximizeWindow(sender, args);
+            return;
+        }
         DragMove();
     }
 

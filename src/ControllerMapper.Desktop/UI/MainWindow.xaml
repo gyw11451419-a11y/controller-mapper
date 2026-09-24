@@ -1,13 +1,22 @@
 <ui:FluentWindow x:Class="ControllerMapper.Desktop.UI.MainWindow"
  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" xmlns:core="clr-namespace:ControllerMapper.Desktop.Core"
+ xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
  Title="Controller Mapper" Width="1280" Height="820" MinWidth="1000" MinHeight="700" WindowStartupLocation="CenterScreen"
- Background="{StaticResource AppBackgroundBrush}" Foreground="{StaticResource AppTextBrush}" FontFamily="Microsoft YaHei UI, Segoe UI" FontSize="13">
+ ExtendsContentIntoTitleBar="True" Background="{StaticResource AppBackgroundBrush}" Foreground="{StaticResource AppTextBrush}" FontFamily="Microsoft YaHei UI, Segoe UI" FontSize="13">
  <Window.InputBindings><KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveProfileCommand}" /><KeyBinding Key="F5" Command="{Binding RefreshDevicesCommand}" /><KeyBinding Key="Escape" Command="{Binding StopCommand}" /></Window.InputBindings>
  <Grid Background="{StaticResource AppBackgroundBrush}">
   <Grid.RowDefinitions><RowDefinition Height="112" /><RowDefinition /><RowDefinition Height="96" /></Grid.RowDefinitions>
+  <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="20" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+   <Button x:Name="MinimizeWindowButton" Style="{StaticResource WindowCaptionButton}" Click="OnMinimizeWindow" ToolTip="最小化" AutomationProperties.Name="最小化窗口"><TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10" /></Button>
+   <Button x:Name="MaximizeWindowButton" Click="OnToggleMaximizeWindow">
+    <Button.Style><Style TargetType="Button" BasedOn="{StaticResource WindowCaptionButton}"><Setter Property="ToolTip" Value="最大化" /><Setter Property="AutomationProperties.Name" Value="最大化窗口" /><Style.Triggers><DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized"><Setter Property="ToolTip" Value="还原" /><Setter Property="AutomationProperties.Name" Value="还原窗口" /></DataTrigger></Style.Triggers></Style></Button.Style>
+    <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="10"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="&#xE922;" /><Style.Triggers><DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized"><Setter Property="Text" Value="&#xE923;" /></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+   </Button>
+   <Button x:Name="CloseWindowButton" Style="{StaticResource WindowCaptionButton}" Click="OnCloseWindow" ToolTip="关闭" AutomationProperties.Name="关闭窗口"><TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10" /></Button>
+  </StackPanel>
   <Border x:Name="WindowDragRegion" Background="Transparent" MouseLeftButtonDown="OnHeaderMouseLeftButtonDown">
-  <Grid Margin="52,28,52,18" IsEnabled="{Binding IsWorkspaceEnabled}">
+  <Grid Margin="52,38,52,12" IsEnabled="{Binding IsWorkspaceEnabled}">
    <Button HorizontalAlignment="Left" Style="{StaticResource IconButton}" Command="{Binding GoBackCommand}" Visibility="{Binding CurrentPage, Converter={StaticResource PageVisibility}, ConverterParameter=NotHome}" AutomationProperties.Name="返回配置首页"><ui:SymbolIcon Symbol="ChevronLeft24" FontSize="24" /></Button>
    <TextBlock Text="{Binding PageTitle}" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center" />
    <Button HorizontalAlignment="Right" Style="{StaticResource ActionButton}" Content="设备说明" Command="{Binding NavigateCommand}" CommandParameter="Device" ToolTip="查看设备与运行说明" AutomationProperties.Name="设备与运行说明" />

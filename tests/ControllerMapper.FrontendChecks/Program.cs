@@ -217,6 +217,22 @@ internal static class Program
             Check(reloaded.SelectedProfile?.Id == newProfileId && reloaded.Profiles.Count == 3,
                   "Saved selection restores after reopening");
             Check(output.ConnectCount == 0, "Frontend tests never connect virtual driver");
+            var minimizeButton = (Button)window.FindName("MinimizeWindowButton");
+            var maximizeButton = (Button)window.FindName("MaximizeWindowButton");
+            var closeButton = (Button)window.FindName("CloseWindowButton");
+            minimizeButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Check(window.WindowState == WindowState.Minimized, "Caption button minimizes window");
+            window.WindowState = WindowState.Normal;
+            maximizeButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
+            Check(window.WindowState == WindowState.Maximized && Equals(maximizeButton.ToolTip, "还原"), "Caption button maximizes and changes to restore");
+            maximizeButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
+            Check(window.WindowState == WindowState.Normal && Equals(maximizeButton.ToolTip, "最大化"), "Caption button restores window");
+            var closeWasRequested = false;
+            window.Closing += (_, args) => { closeWasRequested = true; args.Cancel = true; };
+            closeButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Check(closeWasRequested, "Caption close follows cancellable window closing flow");
             PresentationTraceSources.DataBindingSource.Flush();
             File.WriteAllText(Path.Combine(Root, "bindings.log"), bindingLog.ToString());
             Check(string.IsNullOrWhiteSpace(bindingLog.ToString()), "No binding errors or warnings");

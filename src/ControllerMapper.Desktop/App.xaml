@@ -37,6 +37,21 @@
   </Style>
   <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource ActionButton}"><Setter Property="Background" Value="#F4F4F7" /><Setter Property="Foreground" Value="#151721" /><Style.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="White" /></Trigger></Style.Triggers></Style>
   <Style x:Key="IconButton" TargetType="Button" BasedOn="{StaticResource ActionButton}"><Setter Property="Background" Value="Transparent" /><Setter Property="BorderThickness" Value="0" /><Setter Property="Padding" Value="10" /><Setter Property="Width" Value="42" /><Setter Property="Height" Value="42" /></Style>
+  <Style x:Key="WindowCaptionButton" TargetType="Button">
+   <Setter Property="Width" Value="46" /><Setter Property="Height" Value="32" />
+   <Setter Property="Background" Value="Transparent" /><Setter Property="Foreground" Value="{StaticResource AppTextBrush}" />
+   <Setter Property="BorderThickness" Value="0" /><Setter Property="Padding" Value="0" />
+   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+    <Border x:Name="CaptionChrome" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="1">
+     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+    </Border>
+    <ControlTemplate.Triggers>
+     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="CaptionChrome" Property="Background" Value="#18FFFFFF" /></Trigger>
+     <Trigger Property="IsPressed" Value="True"><Setter TargetName="CaptionChrome" Property="Background" Value="#2AFFFFFF" /></Trigger>
+     <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="CaptionChrome" Property="BorderBrush" Value="#A0FFFFFF" /></Trigger>
+    </ControlTemplate.Triggers>
+   </ControlTemplate></Setter.Value></Setter>
+  </Style>
   <Style x:Key="MenuCard" TargetType="Button" BasedOn="{StaticResource ActionButton}">
    <Setter Property="Background" Value="#20212A" /><Setter Property="BorderBrush" Value="Transparent" /><Setter Property="Padding" Value="30" /><Setter Property="HorizontalContentAlignment" Value="Stretch" />
    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="Card" Background="{TemplateBinding Background}" CornerRadius="9" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Padding="{TemplateBinding Padding}"><ContentPresenter /></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Card" Property="Background" Value="#2B2D39" /><Setter TargetName="Card" Property="BorderBrush" Value="#85899E" /></Trigger><Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Card" Property="BorderBrush" Value="White" /></Trigger><Trigger Property="IsPressed" Value="True"><Setter TargetName="Card" Property="Opacity" Value="0.7" /></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
