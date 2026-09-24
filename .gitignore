@@ -1,0 +1,12 @@
+/.dotnet/
+/.dotnet-home/
+/.nuget/
+/Codex/
+/artifacts/
+/dist/
+**/bin/
+**/obj/
+/.vs/
+*.user
+*.suo
+*.log
