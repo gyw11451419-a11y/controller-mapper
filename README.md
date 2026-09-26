@@ -34,6 +34,12 @@ Windows 10/11 手柄输入与虚拟手柄输出项目。目标是为单机游戏
 
 使用与检查细节见 [前端说明](docs/FRONTEND.md)。
 
+## 下载运行（Windows x64）
+
+打开 [GitHub Releases 下载页](https://github.com/gyw11451419-a11y/controller-mapper/releases)，下载预发布版本 Assets 中的 `ControllerMapper-…-win-x64.zip`，完整解压后运行 `ControllerMapper.exe`。压缩包包含 .NET 运行环境，不需要安装 SDK。不要下载 `Source code` 作为安装包。
+
+首次使用、外部驱动要求及校验方法见 [下载与使用](docs/INSTALL.md)。当前为未签名的开发预发布版本；虚拟手柄输出仍需用户自行安装兼容的 ViGEmBus 驱动。
+
 ## 从源码构建
 
 需要 Windows 10/11 与 .NET 10 SDK。仓库中的 `.dotnet/` 是可选的本地 SDK 安装目录，不是项目源码。
@@ -46,6 +52,17 @@ dotnet publish .\src\ControllerMapper.Desktop\ControllerMapper.Desktop.csproj -c
 预计输出为 `dist\win-x64\ControllerMapper.exe`。发布包还应包含本项目 [LICENSE](LICENSE)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 及所含第三方组件要求的许可和声明；不要把外部 ViGEmBus 安装包放进本项目发行包。
 
 若本机 `dotnet` 不在 `PATH`，可显式调用本地 SDK 的 `G:\codex data\.dotnet\dotnet.exe`。开发环境中的项目和 SDK 路径不是软件运行时要求。
+
+### 制作预发布 ZIP
+
+在完成上面的还原后，使用对应版本号发布，再运行打包脚本：
+
+```powershell
+dotnet publish .\src\ControllerMapper.Desktop\ControllerMapper.Desktop.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:Version=0.1.0-preview.1 --no-restore -o .\dist\releases\v0.1.0-preview.1\ControllerMapper-win-x64
+powershell -ExecutionPolicy Bypass -File .\scripts\Package-Release.ps1 -Version 0.1.0-preview.1
+```
+
+脚本读取还原资产中的包目录和版本，收集许可证、使用说明并生成 ZIP 和 `SHA256SUMS.txt`；还需项目本地 `.dotnet` SDK 中的 WindowsDesktop 第三方声明。输出目录为 `dist/releases/v0.1.0-preview.1/`。脚本不会覆盖已存在的 ZIP，发布新版本时请使用新版本号并更新使用说明中的文件名。
 
 ## 设计与许可
 
